@@ -1,5 +1,13 @@
 # ACL2 MCP Server
 
+> **Fork notice.** This is a fork of
+> [bendyarm/acl2-mcp](https://github.com/bendyarm/acl2-mcp), which is itself a
+> fork of [septract/acl2-mcp](https://github.com/septract/acl2-mcp). All credit
+> for the original server goes to its authors; it is used here under its
+> BSD-3-Clause license (see `LICENSE`). This fork's addition is
+> [`acl2r-mcp`](#acl2r-support-acl2r-mcp), a companion server for ACL2(r);
+> see `CHANGES.md` for details.
+
 > ⚠️ **Use at your own Risk**
 > While this is functional and tested with Claude, you should expect bugs and changes.  Do not use with sensitive data.  Currently the MCP server does not practically limit what ACL2 can do.
 
