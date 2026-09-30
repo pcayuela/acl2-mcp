@@ -10,10 +10,12 @@ readme = "README.md"
 license = {text = "BSD-3-Clause"}
 requires-python = ">=3.10"
 dependencies = [
-    # mcp 2.x removed the low-level Server decorator API this server uses
-    # (Server.list_tools etc.), so stay on the 1.x series.
-    "mcp>=1.0.0,<2",
+    # mcp 2.x removed the low-level Server decorator API used by acl2-mcp
+    # (Server.list_tools etc.) and renamed FastMCP, which acl2r-mcp uses,
+    # so stay on the 1.x series (>=1.2.0 is needed for FastMCP).
+    "mcp>=1.2.0,<2",
     "aiofiles>=23.0.0",
+    "pexpect>=4.8.0",
     "tomli; python_version < '3.11'",
 ]
 classifiers = [
@@ -41,6 +43,11 @@ disallow_untyped_defs = true
 
 [project.scripts]
 acl2-mcp = "acl2_mcp.server:main"
+acl2r-mcp = "acl2_mcp_server:main"
+
+[tool.setuptools]
+packages = ["acl2_mcp"]
+py-modules = ["acl2_mcp_server"]
 
 [tool.setuptools.package-data]
 acl2_mcp = ["*.sh"]

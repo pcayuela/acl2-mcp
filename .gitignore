@@ -47,3 +47,12 @@ Thumbs.db
 # Claude Code
 .claude/*
 !.claude/skills/
+
+# Secrets / local-only
+.env
+*.env
+config.json
+*.key
+*.pem
+
+package-lock.json

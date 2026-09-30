@@ -252,6 +252,27 @@ configured. To start it by hand for development or testing:
 acl2-mcp
 ```
 
+### ACL2(r) support: `acl2r-mcp`
+
+The regular server launches whatever `acl2` is in your `PATH`. To work with
+ACL2(r) (real numbers / nonstandard analysis), or to point at a specific saved
+image, use the companion server `acl2r-mcp`. It keeps one persistent
+ACL2 process over a pseudo-terminal and exposes four tools: `submit`, `wait`
+(pick up a long proof after a timeout), `reset` (recover from a raw-Lisp
+break or hang) and `status`.
+
+```bash
+claude mcp add acl2r /path/to/acl2-mcp/venv/bin/acl2r-mcp -- \
+  --acl2-path /path/to/acl2/saved_acl2r --label "ACL2r"
+```
+
+`--acl2-path` and `--label` can also be given as the `ACL2_EXECUTABLE` and
+`ACL2_LABEL` environment variables. Prefer the command-line form when the
+server is launched through `wsl.exe` by Claude Desktop on Windows, because
+environment variables do not cross the Windows/WSL boundary. Both servers can
+be registered side by side. To check an executable without MCP, run
+`python smoke_test.py /path/to/saved_acl2r`.
+
 ## Usage
 
 ### Persistent Session Workflow (Recommended for Interactive Development)

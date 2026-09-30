@@ -1,3 +1,18 @@
+# Changes — 2026-09-30
+
+- Added `acl2r-mcp`, a second, minimal MCP server (`acl2_mcp_server.py`)
+  that drives either ACL2 or ACL2(r) (the nonstandard-analysis / real
+  numbers variant) as one persistent interactive process over a real
+  pseudo-terminal using `pexpect`.  Tools: `submit`, `wait`, `reset`,
+  `status`.  The executable is chosen with `--acl2-path` and `--label`
+  (or `ACL2_EXECUTABLE` / `ACL2_LABEL`), so the same code serves both.
+- Added `smoke_test.py`, a standalone check that a given ACL2/ACL2(r)
+  executable can be driven over a pty, without involving MCP.
+- Added `pexpect` as a dependency and raised the `mcp` requirement to
+  `>=1.2.0,<2` (`FastMCP` is needed, and mcp 2.x renamed it).
+- Hardened `.gitignore` against committing secrets (`.env`, `*.key`,
+  `*.pem`, `config.json`).
+
 # Changes — 2026-05-24
 
 - Improved the organization of the README.md installation instructions,
