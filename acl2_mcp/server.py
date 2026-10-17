@@ -96,6 +96,12 @@ PROMPT_SETTLE_SECONDS = 0.2
 # Because these patterns are broad (especially ".*>[ ]*$" and ".*\* $"),
 # prompt detection uses a settle delay (PROMPT_SETTLE_SECONDS) to
 # distinguish real prompts from mid-output lines that happen to match.
+# Executable and server name are configurable so the same code can drive
+# ACL2(r) (e.g. ACL2_MCP_EXECUTABLE=~/acl2r/saved_acl2r ACL2_MCP_NAME=acl2r-full).
+# The defaults leave the plain ACL2 server unchanged.
+ACL2_EXECUTABLE = os.path.expanduser(os.environ.get("ACL2_MCP_EXECUTABLE", "acl2"))
+SERVER_NAME = os.environ.get("ACL2_MCP_NAME", "acl2-mcp")
+
 PROMPT_PATTERNS = [
     re.compile(r'.*>[ ]*$'),      # ACL2, GCL, CLISP, LispWorks, CCL debugger
     re.compile(r'.*\] $'),        # SBCL debugger
@@ -1341,7 +1347,7 @@ class SessionManager:
             # Spawn ACL2 process with slave as stdin/stdout/stderr
             # Note: We call 'acl2' directly, no wrapper script needed
             process = await asyncio.create_subprocess_exec(
-                "acl2",
+                ACL2_EXECUTABLE,
                 stdin=slave_fd,
                 stdout=slave_fd,
                 stderr=slave_fd,
@@ -1399,7 +1405,7 @@ class SessionManager:
             while time.time() - start_time < 10.0:  # 10 second timeout
                 # Check if we've seen the ACL2 prompt
                 for _sid, line in session.output_buffer:
-                    if "ACL2 !>" in line:
+                    if re.search(r"ACL2(\(r\))? !>", line):
                         startup_complete = True
                         break
                 if startup_complete:
@@ -1566,7 +1572,7 @@ server_config = load_config()
 _init_debug_logging(server_config.debug_logging)
 session_manager = SessionManager(server_config)
 
-app: Server = Server("acl2-mcp")
+app: Server = Server(SERVER_NAME)
 
 
 @app.list_tools()  # type: ignore[misc,no-untyped-call]
@@ -2028,7 +2034,7 @@ async def run_acl2(code: str, timeout: int | None = None) -> str:
 
     try:
         process = await asyncio.create_subprocess_exec(
-            "acl2",
+            ACL2_EXECUTABLE,
             stdin=asyncio.subprocess.PIPE,
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE,

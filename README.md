@@ -4,9 +4,11 @@
 > [bendyarm/acl2-mcp](https://github.com/bendyarm/acl2-mcp), which is itself a
 > fork of [septract/acl2-mcp](https://github.com/septract/acl2-mcp). All credit
 > for the original server goes to its authors; it is used here under its
-> BSD-3-Clause license (see `LICENSE`). This fork's addition is
-> [`acl2r-mcp`](#acl2r-support-acl2r-mcp), a companion server for ACL2(r);
-> see `CHANGES.md` for details.
+> BSD-3-Clause license (see `LICENSE`). This fork adds ACL2(r) support
+> (real numbers / nonstandard analysis) in two ways, see
+> [ACL2(r) support](#acl2r-support): the full-featured `acl2-mcp` server can
+> now drive any ACL2 or ACL2(r) executable, and a minimal companion server,
+> `acl2r-mcp`, is included. See `CHANGES.md` for details.
 
 > ⚠️ **Use at your own Risk**
 > While this is functional and tested with Claude, you should expect bugs and changes.  Do not use with sensitive data.  Currently the MCP server does not practically limit what ACL2 can do.
@@ -260,26 +262,67 @@ configured. To start it by hand for development or testing:
 acl2-mcp
 ```
 
-### ACL2(r) support: `acl2r-mcp`
+### ACL2(r) support
 
-The regular server launches whatever `acl2` is in your `PATH`. To work with
-ACL2(r) (real numbers / nonstandard analysis), or to point at a specific saved
-image, use the companion server `acl2r-mcp`. It keeps one persistent
-ACL2 process over a pseudo-terminal and exposes four tools: `submit`, `wait`
-(pick up a long proof after a timeout), `reset` (recover from a raw-Lisp
-break or hang) and `status`.
+ACL2(r) is the variant of ACL2 with real numbers and nonstandard analysis.
+Its books are **not interchangeable** with plain ACL2: certificates record
+"ACL2 Version 8.7(r)", and each flavor needs its own tree of certified books
+(for example `~/acl2` and `~/acl2r`). This fork offers two ways to drive
+ACL2(r) from MCP; both can be registered side by side with the plain server.
+
+#### Option 1: the full `acl2-mcp` server pointed at ACL2(r)
+
+By default `acl2-mcp` launches whatever `acl2` is in your `PATH`. Two
+environment variables select another executable and give the server its own
+name, so you get all the tools (persistent sessions with IDs, `prove`,
+`include_book`, `certify_book`-style workflows, `undo`, checkpoints,
+`xdoc_search`, session logs, output elision) on an ACL2(r) image:
+
+| Variable | Default | Meaning |
+|---|---|---|
+| `ACL2_MCP_EXECUTABLE` | `acl2` | ACL2 or ACL2(r) executable to launch (`~` is expanded) |
+| `ACL2_MCP_NAME` | `acl2-mcp` | MCP server name shown to the client |
+
+```bash
+claude mcp add --scope user acl2r-full \
+  -e ACL2_MCP_EXECUTABLE=/path/to/acl2r/saved_acl2r \
+  -e ACL2_MCP_NAME=acl2r-full \
+  -- /path/to/acl2-mcp/venv/bin/acl2-mcp
+```
+
+The defaults leave the plain `acl2-mcp` server unchanged. The `ACL2(r) !>`
+prompt is recognized, and startup detection accepts both `ACL2 !>` and
+`ACL2(r) !>`. Note that `cert.pl`-based tools (`certify_book`) use the
+`acl2` found in `PATH`, so for ACL2(r) books call `(certify-book ...)`
+inside a session instead; ACL2 allows one `certify-book` per session, so start
+a new session for each book.
+
+#### Option 2: the minimal `acl2r-mcp` server
+
+`acl2r-mcp` keeps one persistent ACL2 process over a pseudo-terminal
+(`pexpect`) and exposes four tools: `submit`, `wait` (pick up a long proof
+after a timeout), `reset` (recover from a raw-Lisp break or hang) and
+`status`. There are no session IDs; the process starts on the first `submit`.
 
 ```bash
 claude mcp add acl2r /path/to/acl2-mcp/venv/bin/acl2r-mcp -- \
-  --acl2-path /path/to/acl2/saved_acl2r --label "ACL2r"
+  --acl2-path /path/to/acl2r/saved_acl2r --label "ACL2r"
 ```
 
 `--acl2-path` and `--label` can also be given as the `ACL2_EXECUTABLE` and
 `ACL2_LABEL` environment variables. Prefer the command-line form when the
 server is launched through `wsl.exe` by Claude Desktop on Windows, because
-environment variables do not cross the Windows/WSL boundary. Both servers can
-be registered side by side. To check an executable without MCP, run
-`python smoke_test.py /path/to/saved_acl2r`.
+environment variables do not cross the Windows/WSL boundary. To check an
+executable without MCP, run `python smoke_test.py /path/to/saved_acl2r`.
+
+#### Which one to use
+
+| | `acl2-mcp` (plain) | `acl2-mcp` + `ACL2_MCP_EXECUTABLE` | `acl2r-mcp` |
+|---|---|---|---|
+| ACL2 flavor | `acl2` in `PATH` | any executable, e.g. ACL2(r) | any executable (`--acl2-path`) |
+| Tools | full set | full set | `submit`, `wait`, `reset`, `status` |
+| Sessions | many, by ID | many, by ID | one persistent process |
+| Best for | everyday ACL2 work | the same, for ACL2(r) | simple, robust scripted access |
 
 ## Usage
 

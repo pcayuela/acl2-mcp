@@ -1,3 +1,19 @@
+# Changes — 2026-10-17
+
+- `acl2-mcp` can now drive any ACL2 or ACL2(r) executable.  The new
+  environment variables `ACL2_MCP_EXECUTABLE` (default `acl2`) and
+  `ACL2_MCP_NAME` (default `acl2-mcp`) select the executable and the MCP
+  server name, so a second registration (for example `acl2r-full`) gives the
+  complete tool set on an ACL2(r) image.  The defaults leave existing
+  behavior unchanged.
+- Startup detection now recognizes the `ACL2(r) !>` prompt as well as
+  `ACL2 !>` (previously an ACL2(r) session waited out the 10 s timeout).
+- README: new "ACL2(r) support" section documenting both options
+  (`acl2-mcp` with `ACL2_MCP_EXECUTABLE`, and the minimal `acl2r-mcp`), the
+  need for separate plain-ACL2 and ACL2(r) book trees, and a comparison table.
+- Tested with the three servers (`acl2`, `acl2r`, `acl2r-full`) by recertifying
+  the books of two published verification projects from clean sources.
+
 # Changes — 2026-09-30
 
 - Added `acl2r-mcp`, a second, minimal MCP server (`acl2_mcp_server.py`)
