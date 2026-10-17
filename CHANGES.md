@@ -11,6 +11,9 @@
 - README: new "ACL2(r) support" section documenting both options
   (`acl2-mcp` with `ACL2_MCP_EXECUTABLE`, and the minimal `acl2r-mcp`), the
   need for separate plain-ACL2 and ACL2(r) book trees, and a comparison table.
+- Documented a Docker-based ACL2 / ACL2(r) environment
+  ([pcayuela/acl2-acl2r-docker](https://github.com/pcayuela/acl2-acl2r-docker))
+  that can serve as the ACL2 executable of either server.
 - Tested with the three servers (`acl2`, `acl2r`, `acl2r-full`) by recertifying
   the books of two published verification projects from clean sources.
 

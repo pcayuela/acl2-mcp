@@ -315,6 +315,17 @@ server is launched through `wsl.exe` by Claude Desktop on Windows, because
 environment variables do not cross the Windows/WSL boundary. To check an
 executable without MCP, run `python smoke_test.py /path/to/saved_acl2r`.
 
+#### Reproducible ACL2 / ACL2(r) environment (Docker)
+
+If you would rather not build ACL2 and ACL2(r) and certify their books yourself,
+[pcayuela/acl2-acl2r-docker](https://github.com/pcayuela/acl2-acl2r-docker)
+provides a Docker image with ACL2 8.7 and ACL2(r) 8.7 side by side and the
+commonly needed community books (`arithmetic-5`, `nonstd/nsa`, the
+Reid–Gamboa differentiator support books) already certified. It includes
+`acl2-docker` / `acl2r-docker` wrapper scripts that can be used as
+`ACL2_MCP_EXECUTABLE` (or `--acl2-path` for `acl2r-mcp`), so either server runs
+its ACL2 inside a container. Tested with both servers.
+
 #### Which one to use
 
 | | `acl2-mcp` (plain) | `acl2-mcp` + `ACL2_MCP_EXECUTABLE` | `acl2r-mcp` |
