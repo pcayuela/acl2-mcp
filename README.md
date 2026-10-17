@@ -324,7 +324,8 @@ commonly needed community books (`arithmetic-5`, `nonstd/nsa`, the
 Reid–Gamboa differentiator support books) already certified. It includes
 `acl2-docker` / `acl2r-docker` wrapper scripts that can be used as
 `ACL2_MCP_EXECUTABLE` (or `--acl2-path` for `acl2r-mcp`), so either server runs
-its ACL2 inside a container. Tested with both servers.
+its ACL2 inside a container. A prebuilt image is available:
+`docker pull ghcr.io/pcayuela/acl2-acl2r-docker:8.7`. Tested with both servers.
 
 #### Which one to use
 
